@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  kt_mysql:
+    image: mysql:latest
+    container_name: kt_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: todo
+      MYSQL_USER: nyi
+      MYSQL_PASSWORD: nyilinhtut
+    volumes:
+      - kt_mysql_volume:/var/lib/mysql
+    networks:
+      - kt_network
+
+  kt_php:
+    build:
+      dockerfile: devops/docker/php.dockerfile
+    container_name: kt_php
+    depends_on: 
+      - kt_mysql
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - kt_network
+  
+  kt_nginx:
+    image: nginx:latest
+    container_name: kt_nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - kt_php
+    networks:
+      - kt_network
+    volumes:
+      - ./:/var/www/html
+      - ./devops/docker/nginx.conf:/etc/nginx/conf.d/default.conf
+
+
+networks:
+  kt_network:
+    driver: bridge
+
+volumes:
+  kt_mysql_volume:
