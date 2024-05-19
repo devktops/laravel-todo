@@ -12,7 +12,7 @@
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
 ## system requirements
-- PHP >= 8.1
+- PHP >= 8.3
 - Composer >= 2.1.9
 - Node.js >= 18.0.0
 - NPM >= 7.24.0
@@ -52,8 +52,8 @@ php artisan optimize
 ```nginx
 server {
     listen 80;
-    server_name example.com;
-    root /var/www/example.com/public;
+    server_name laravel.thixpin.me;
+    root /var/www/laravel.thixpin.me/public;
 
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-XSS-Protection "1; mode=block";
@@ -74,7 +74,7 @@ server {
 
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
     }
 
     location ~ /\.(?!well-known).* {
@@ -85,13 +85,13 @@ server {
 
 ## php-fpm Configuration
 ```bash
-vim /etc/php/8.1/fpm/pool.d/www.conf
+vim /etc/php/8.3/fpm/pool.d/www.conf
 ```
 
 ```nginx
 user = www-data
 group = www-data
-listen = /var/run/php/php8.1-fpm.sock
+listen = /var/run/php/php8.3-fpm.sock
 listen.owner = www-data
 listen.group = www-data
 listen.mode = 0660
@@ -103,5 +103,15 @@ sudo apt update
 sudo apt install software-properties-common
 sudo add-apt-repository ppa:ondrej/php
 sudo apt update
-sudo apt install -y php8.1 php8.1-fpm php8.1-mysql php8.1-xml php8.1-mbstring php8.1-gd php8.1-curl php8.1-zip php8.1-imagick php8.1-redis php8.1-bcmath php8.1-exif php8.1-ctype php8.1-fileinfo php8.1-json php8.1-tokenizer php8.1-xml php8.1-openssl
+sudo apt install -y nginx php8.3 php8.3-fpm php8.3-mysql php8.3-xml php8.3-mbstring php8.3-gd php8.3-curl php8.3-zip php8.3-imagick php8.3-redis php8.3-bcmath php8.3-exif php8.3-ctype php8.3-fileinfo php8.3-tokenizer php8.3-xml
+curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+sudo apt install -y mysql-server mysql-client
+```
+
+```mysql
+CREATE USER 'kt'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+CREATE DATABASE laravel;
+GRANT ALL PRIVILEGES ON laravel.* TO 'kt'@'localhost';
+GRANT CSELECT, REFERENCES on *.* TO 'kt'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
 ```
